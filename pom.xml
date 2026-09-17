@@ -13,6 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cppLexerJar>${project.basedir}/lib/cpp-lexer-1.jar</cppLexerJar>
     </properties>
 
     <dependencies>
@@ -37,7 +38,7 @@
             <artifactId>cpplexer</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/cpp-lexer-1.jar</systemPath>
+            <systemPath>${cppLexerJar}</systemPath>
         </dependency>
     </dependencies>
 
