@@ -9,23 +9,26 @@ The tool tokenizes C++ source with an [ANTLR C++14 lexer](https://github.com/ant
 
 ## Build
 
-Requires JDK 8+ and Maven 3.2.5+. The build needs network access to your Maven repository and to `raw.githubusercontent.com`.
+Requires JDK 8+ and Maven 3.2.5+. Needs network access to Maven repository and to `raw.githubusercontent.com`.
 
 ```sh
 mvn clean package
 ```
+Generates an executable JAR `target/cpp-anonymizer-1.0-SNAPSHOT-jar-with-dependencies.jar` with the lexer and its dependencies bundled.
 
-The build downloads [`CPP14Lexer.g4`](https://github.com/antlr/grammars-v4/blob/962e91ce6ca365b7e1417d8b55de8e78e1895c0e/cpp/CPP14Lexer.g4) from `antlr/grammars-v4` at the commit pinned in `pom.xml` (`grammarsV4.commit`), verifies its SHA-256, and generates `lexer.CPP14Lexer` with the ANTLR 4.7.1 Maven plugin. [`CPP14Parser.g4`](https://github.com/antlr/grammars-v4/blob/master/cpp/CPP14Parser.g4) is not required because this project only uses the lexer.
+The build downloads [`CPP14Lexer.g4`](https://github.com/antlr/grammars-v4/blob/962e91ce6ca365b7e1417d8b55de8e78e1895c0e/cpp/CPP14Lexer.g4) from `antlr/grammars-v4` and generates `lexer.CPP14Lexer` with the ANTLR 4.7.1 Maven plugin.
 
-The executable JAR, with the lexer and its dependencies bundled, is:
 
-```text
-target/cpp-anonymizer-1.0-SNAPSHOT-jar-with-dependencies.jar
+## Run
+
+```sh
+java -jar target/cpp-anonymizer-1.0-SNAPSHOT-jar-with-dependencies.jar \
+  <source.cpp> <anonymized.cpp> <anonymization-map.json> [idioms.txt]
 ```
 
-To move to a newer grammar, update `grammarsV4.commit` and `cppLexerGrammar.sha256` in `pom.xml`.
+The optional `idioms.txt` file lists literals to keep unchanged, one per line, written exactly as in the source; string literals include their quotes, for example `"hi"`. Identifiers are always replaced. The command writes the anonymized C++ source and its JSON anonymization map.
 
-### Build flow
+### How it's built
 
 ```text
 CPP14Lexer.g4 (antlr/grammars-v4 @ grammarsV4.commit)
@@ -40,17 +43,6 @@ antlr4-runtime and jackson-databind Maven dependencies
     ↓ maven-assembly-plugin
 cpp-anonymizer executable JAR
 ```
-
-The generated lexer uses ANTLR runtime classes such as `Lexer`, `Token`, `ATN`, `DFA`, and `LexerATNSimulator`, which come from the `antlr4-runtime` dependency and are bundled into the executable JAR.
-
-## Command line
-
-```sh
-java -jar target/cpp-anonymizer-1.0-SNAPSHOT-jar-with-dependencies.jar \
-  <source.cpp> <anonymized.cpp> <anonymization-map.json> [idioms.txt]
-```
-
-The optional `idioms.txt` file lists literals to keep unchanged, one per line, written exactly as in the source; string literals include their quotes, for example `"hi"`. Identifiers are always replaced. The command writes the anonymized C++ source and its JSON anonymization map.
 
 ## Ideas
 
