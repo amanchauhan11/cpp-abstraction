@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class AppEndToEndTest {
   @Test
   public void commandLineWritesAnonymizedSourceAndMap() throws Exception {
-    Path directory = Files.createTempDirectory("cpp-abstraction-");
+    Path directory = Files.createTempDirectory("cpp-anonymizer-");
     Path source = directory.resolve("input.cpp");
     Path output = directory.resolve("anonymized.cpp");
     Path map = directory.resolve("map.json");
