@@ -28,12 +28,6 @@ public class Anonymizer {
   private final Map<String, String> floatingPointLiterals = new LinkedHashMap<>();
   private Set<String> idioms = java.util.Collections.emptySet();
 
-  private int identifierCount;
-  private int stringCount;
-  private int characterCount;
-  private int integerCount;
-  private int floatingPointCount;
-
   public void setIdioms(String idiomsFilePath) {
     idioms = Idioms.readIdioms(idiomsFilePath);
   }
@@ -67,29 +61,29 @@ public class Anonymizer {
   private String anonymizeToken(Token token) {
     String value = token.getText();
     if (token.getType() == CPP14Lexer.Identifier) {
-      return placeholder(identifiers, value, "VAR_", ++identifierCount);
+      return placeholder(identifiers, value, "VAR_");
     }
     if (idioms.contains(value)) {
       return value;
     }
     if (token.getType() == CPP14Lexer.CharacterLiteral) {
-      return placeholder(characterLiterals, value, "CHAR_", ++characterCount);
+      return placeholder(characterLiterals, value, "CHAR_");
     }
     if (token.getType() == CPP14Lexer.FloatingLiteral) {
-      return placeholder(floatingPointLiterals, value, "FLOAT_", ++floatingPointCount);
+      return placeholder(floatingPointLiterals, value, "FLOAT_");
     }
     if (token.getType() == CPP14Lexer.IntegerLiteral) {
-      return placeholder(integerLiterals, value, "INT_", ++integerCount);
+      return placeholder(integerLiterals, value, "INT_");
     }
     if (token.getType() == CPP14Lexer.StringLiteral) {
-      return placeholder(stringLiterals, value, "STRING_", ++stringCount);
+      return placeholder(stringLiterals, value, "STRING_");
     }
     return value;
   }
 
-  private String placeholder(Map<String, String> map, String value, String prefix, int number) {
+  private String placeholder(Map<String, String> map, String value, String prefix) {
     if (!map.containsKey(value)) {
-      map.put(value, prefix + number);
+      map.put(value, prefix + (map.size() + 1));
     }
     return map.get(value);
   }
