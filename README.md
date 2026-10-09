@@ -52,22 +52,6 @@ java -jar target/cpp-abstraction-1.0-SNAPSHOT-jar-with-dependencies.jar \
 
 The optional `idioms.txt` file contains values that should remain unchanged. The command writes the anonymized C++ source and its JSON anonymization map.
 
-## S-expression
+## Ideas
 
-Function call:
-
-```text
-(call_expression function: (_) @call_name)
-```
-
-Function definition:
-
-```text
-(function_declarator declarator: (identifier) @call_name)
-```
-
-Type declaration:
-
-```text
-(type_identifier) @type
-```
+See [IDEAS.md](IDEAS.md) for planned work, such as syntax-aware abstraction with tree-sitter.
