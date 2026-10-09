@@ -43,6 +43,7 @@ Generate Java source from the grammar:
 java -jar antlr-4.7.1-complete.jar \
   -Dlanguage=Java \
   -package lexer \
+  -Xexact-output-dir \
   -o build/generated \
   build/CPP14Lexer.g4
 ```
@@ -86,7 +87,7 @@ mvn clean package \
 The generated executable JAR will be:
 
 ```text
-target/cpp-anonymizer-1.0-SNAPSHOT-jar-with-dependencies.jar
+target/cpp-abstraction-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 ### Build flow
@@ -110,7 +111,7 @@ The generated lexer uses ANTLR runtime classes such as `Lexer`, `Token`, `ATN`, 
 ## Command line
 
 ```sh
-java -jar target/cpp-anonymizer-1.0-SNAPSHOT-jar-with-dependencies.jar \
+java -jar target/cpp-abstraction-1.0-SNAPSHOT-jar-with-dependencies.jar \
   <source.cpp> <anonymized.cpp> <anonymization-map.json> [idioms.txt]
 ```
 
