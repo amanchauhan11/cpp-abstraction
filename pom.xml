@@ -5,78 +5,31 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.cpp.abstraction</groupId>
-    <artifactId>cppabstraction</artifactId>
+    <artifactId>cpp-anonymizer</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-    </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4.1</version>
-                <configuration>
-                    <!-- get all project dependencies -->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <!-- MainClass in mainfest make a executable jar -->
-                    <archive>
-                        <manifest>
-                            <mainClass>main.App</mainClass>
-                        </manifest>
-                    </archive>
 
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <!-- bind to the packaging phase -->
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <antlr.version>4.7.1</antlr.version>
+        <!-- CPP14Lexer.g4 from antlr/grammars-v4, pinned to a commit and verified by checksum -->
+        <grammarsV4.commit>962e91ce6ca365b7e1417d8b55de8e78e1895c0e</grammarsV4.commit>
+        <cppLexerGrammar.sha256>739a8782e05279318dccab76bf05af1ff5e3ff9e43f1b5b0d04e14d91d4fff47</cppLexerGrammar.sha256>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>antlr4</artifactId>
-            <version>4.7.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.github.javaparser</groupId>-->
-            <!--<artifactId>javaparser-core-generators</artifactId>-->
-            <!--<version>3.5.6</version>-->
-        <!--</dependency>-->
-        <!-- 		This dependency is a local jar that needs to be installed manually on maven -->
-        <!-- 	mvn install:install-file -Dfile="lib/cpp-lexer-1.jar"  -->
-        <!-- 	-DgroupId="io.cpp.abstraction"  -->
-        <!-- 	-DartifactId="cpplexer"  -->
-        <!-- 	-Dversion="1"  -->
-        <!-- 	-Dpackaging="jar" -->
-        <dependency>
-            <groupId>io.cpp.abstraction</groupId>
-            <artifactId>cpplexer</artifactId>
-            <version>1</version>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -85,4 +38,61 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <executions>
+                    <execution>
+                        <id>download-cpp-lexer-grammar</id>
+                        <phase>generate-sources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <url>https://raw.githubusercontent.com/antlr/grammars-v4/${grammarsV4.commit}/cpp/CPP14Lexer.g4</url>
+                            <outputDirectory>${project.build.directory}/grammar/lexer</outputDirectory>
+                            <outputFileName>CPP14Lexer.g4</outputFileName>
+                            <sha256>${cppLexerGrammar.sha256}</sha256>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Generates lexer.CPP14Lexer; the package comes from the grammar's directory -->
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr.version}</version>
+                <configuration>
+                    <sourceDirectory>${project.build.directory}/grammar</sourceDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals><goal>antlr4</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>main.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals><goal>single</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
