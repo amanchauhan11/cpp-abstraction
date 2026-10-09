@@ -25,6 +25,24 @@ target/cpp-abstraction-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 To move to a newer grammar, update `grammarsV4.commit` and `cppLexerGrammar.sha256` in `pom.xml`.
 
+### Build flow
+
+```text
+CPP14Lexer.g4 (antlr/grammars-v4 @ grammarsV4.commit)
+    ↓ download-maven-plugin, SHA-256 verified
+target/grammar/lexer/CPP14Lexer.g4
+    ↓ antlr4-maven-plugin
+target/generated-sources/antlr4/lexer/CPP14Lexer.java
+    ↓ javac, with the project sources
+lexer/CPP14Lexer.class
+    +
+antlr4-runtime and jackson-databind Maven dependencies
+    ↓ maven-assembly-plugin
+cpp-abstraction executable JAR
+```
+
+The generated lexer uses ANTLR runtime classes such as `Lexer`, `Token`, `ATN`, `DFA`, and `LexerATNSimulator`, which come from the `antlr4-runtime` dependency and are bundled into the executable JAR.
+
 ## Command line
 
 ```sh
